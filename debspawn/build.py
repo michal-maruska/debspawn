@@ -416,6 +416,35 @@ def _print_system_info():
     )
 
 
+# return False on error
+def create_source_package(pkg_dir, clean_source):
+    with cd(pkg_dir):
+        with switch_unprivileged():
+            deb_files_fname = os.path.join(pkg_dir, 'debian', 'files')
+            if os.path.isfile(deb_files_fname):
+                deb_files_fname = None  # the file already existed, we don't need to clean it up later
+
+            # note: this creates source package:
+            cmd = ['dpkg-buildpackage', '-S', '--no-sign']
+            # d/rules clean requires build dependencies installed if run on the host
+            # we avoid that by default, unless explicitly requested
+            if not clean_source:
+                cmd.append('-nc')
+
+            proc = subprocess.run(cmd, check=False)
+            if proc.returncode != 0:
+                return False
+
+            # remove d/files file that was created when generating the source package.
+            # we only clean up the file if it didn't exist prior to us running the command.
+            if deb_files_fname:
+                try:
+                    os.remove(deb_files_fname)
+                except OSError:
+                    pass
+            return True
+
+
 def build_from_directory(
     osbase,
     pkg_dir,
@@ -456,34 +485,15 @@ def build_from_directory(
     _print_system_info()
     print_header('Package build (from directory)')
 
-    print_section('Creating source package')
+    create_source_package = False
     with cd(pkg_dir):
         with switch_unprivileged():
-            deb_files_fname = os.path.join(pkg_dir, 'debian', 'files')
-            if os.path.isfile(deb_files_fname):
-                deb_files_fname = None  # the file already existed, we don't need to clean it up later
-
             pkg_sourcename, pkg_version, dsc_fname = _read_source_package_details()
             if not pkg_sourcename:
                 return False
-
-            cmd = ['dpkg-buildpackage', '-S', '--no-sign']
-            # d/rules clean requires build dependencies installed if run on the host
-            # we avoid that by default, unless explicitly requested
-            if not clean_source:
-                cmd.append('-nc')
-
-            proc = subprocess.run(cmd, check=False)
-            if proc.returncode != 0:
+            if not create_source_package(pkg_dir, clean_source):
+                print_section('Creating source package')
                 return False
-
-            # remove d/files file that was created when generating the source package.
-            # we only clean up the file if it didn't exist prior to us running the command.
-            if deb_files_fname:
-                try:
-                    os.remove(deb_files_fname)
-                except OSError:
-                    pass
 
     print_header('Package build')
     print_build_detail(osbase, pkg_sourcename, pkg_version)
