@@ -79,7 +79,7 @@ def systemd_version_atleast(expected_version: int):
 
 def get_nspawn_personality(osbase):
     '''
-    Return the syszemd-nspawn container personality for the given combination
+    Return the systemd-nspawn container personality for the given combination
     of host architecture and base OS.
     This allows running x86 builds on amd64 machines.
     '''
