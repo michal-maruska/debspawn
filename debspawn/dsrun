@@ -188,8 +188,8 @@ def update_container(builder_uid):
         run_command('useradd -M -f -1 -d {} --uid {} {}'
                     .format(INVALID_DIR, builder_uid, BUILD_USER))
 
-    run_command('mkdir -p /srv/build')
-    run_command('chown {} /srv/build'.format(BUILD_USER))
+    run_command(f'mkdir -p {BUILD_DIR}')
+    run_command('chown {} {}'.format(BUILD_USER, BUILD_DIR))
 
     # ensure the non existent directory is gone even if it was
     # created accidentally
@@ -288,7 +288,7 @@ SHA256:
     # ensure we are in our build directory at this point
     os.chdir(BUILD_DIR)
 
-    run_command('chown -R {} /srv/build'.format(BUILD_USER))
+    run_command('chown -R {} {}'.format(BUILD_USER, BUILD_DIR))
     for f in glob('./*'):
         if os.path.isdir(f):
             os.chdir(f)
