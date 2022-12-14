@@ -42,6 +42,9 @@ def run_command(command, input=None):
     if not isinstance(command, list):
         command = shlex.split(command)
 
+    print("run_command -> Popen: ", file=sys.stderr, end='')
+    print(" ".join(command), file=sys.stderr)
+
     if not input:
         input = None
     elif isinstance(input, str):
