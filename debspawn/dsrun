@@ -189,7 +189,7 @@ def update_container(builder_uid):
                     .format(INVALID_DIR, builder_uid, BUILD_USER))
 
     run_command(f'mkdir -p {BUILD_DIR}')
-    run_command('chown {} {}'.format(BUILD_USER, BUILD_DIR))
+    run_command('chown {} {}/..'.format(BUILD_USER, BUILD_DIR))
 
     # ensure the non existent directory is gone even if it was
     # created accidentally
