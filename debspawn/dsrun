@@ -207,6 +207,13 @@ def prepare_run():
 
     return True
 
+def chdir_to_build():
+    os.chdir(BUILD_DIR)
+    # for f in glob('./*'):
+    #     if os.path.isdir(f):
+    #         os.chdir(f)
+    #         break
+
 
 def _generate_hashes(filename):
     import hashlib
@@ -286,13 +293,9 @@ SHA256:
                 run_apt_command('full-upgrade')
 
     # ensure we are in our build directory at this point
-    os.chdir(BUILD_DIR)
-
+    chdir_to_build()
+    # mmc: why not before the line above?
     run_command('chown -R {} {}'.format(BUILD_USER, BUILD_DIR))
-    for f in glob('./*'):
-        if os.path.isdir(f):
-            os.chdir(f)
-            break
 
     print_section('Installing package build-dependencies')
     with eatmydata():
@@ -309,11 +312,7 @@ def build_package(buildflags=None, suite=None):
     drop_privileges()
     print_section('Build')
 
-    os.chdir(BUILD_DIR)
-    for f in glob('./*'):
-        if os.path.isdir(f):
-            os.chdir(f)
-            break
+    chdir_to_build()
 
     cmd = ['dpkg-buildpackage']
     if suite:
@@ -329,11 +328,7 @@ def build_package(buildflags=None, suite=None):
 
 def run_qatasks(qa_lintian=True):
     ''' Run QA tasks on a built package immediately after build (currently Lintian) '''
-    os.chdir(BUILD_DIR)
-    for f in glob('./*'):
-        if os.path.isdir(f):
-            os.chdir(f)
-            break
+    chdir_to_build()
 
     if qa_lintian:
         print_section('QA: Prepare')
