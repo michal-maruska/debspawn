@@ -74,11 +74,7 @@ def interact_with_build_environment(
     '''Launch an interactive shell in the build environment'''
 
     # find the right directory to switch to
-    pkg_dir = pkg_dir_root
-    for f in glob(os.path.join(pkg_dir, '*')):
-        if os.path.isdir(f):
-            pkg_dir = f
-            break
+    pkg_dir = BUILD_DIR
 
     print()
     print_info('Launching interactive shell in build environment.')
@@ -95,7 +91,7 @@ def interact_with_build_environment(
         osbase,
         instance_dir,
         machine_name,
-        chdir=os.path.join(BUILD_DIR, os.path.basename(pkg_dir)),
+        chdir=BUILD_DIR, # os.path.join(BUILD_DIR, os.path.basename(pkg_dir)),
         flags=nspawn_flags,
         tmp_apt_cache_dir=aptcache_tmp,
         pkginjector=pkginjector,
