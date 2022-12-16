@@ -61,12 +61,20 @@ class BuildError(Exception):
     """Package build failed with a generic error."""
 
 
+# I need a temporary dir on the host.
+#
+def bind_mount_flags(pkg_dir, source_pkg_dir):
+    # new layout:
+    return ['--bind={}:{}'.format(pkg_dir, BUILD_DIR),
+     '--bind={}:{}/package'.format(source_pkg_dir, BUILD_DIR),
+     ]
+
 def interact_with_build_environment(
     osbase,
     instance_dir,
     machine_name,
     *,
-    pkg_dir_root,
+    pkg_dir_root, # mmc: what's the difference?
     source_pkg_dir,
     aptcache_tmp,
     pkginjector,
@@ -87,7 +95,7 @@ def interact_with_build_environment(
     print_info('Press CTL+D to exit the interactive shell.')
     print()
 
-    nspawn_flags = ['--bind={}:{}/'.format(pkg_dir_root, BUILD_DIR)]
+    nspawn_flags = bind_mount_flags(pkg_dir_root, source_pkg_dir)
     nspawn_run_persist(
         osbase,
         instance_dir,
@@ -198,7 +206,7 @@ def internal_execute_build(
     '''Perform the actual build on an extracted package directory'''
     assert not build_only or isinstance(build_only, str)
     if not pkg_dir:
-        raise ValueError('Package directory is missing!')
+        raise ValueError('directory for artifacts is missing!') # Package
     pkg_dir = os.path.normpath(pkg_dir)
     if not build_env:
         build_env = {}
@@ -231,7 +239,7 @@ def internal_execute_build(
                 pkginjector.create_instance_repo(os.path.join(pkgsync_tmp, 'pkginject'))
 
             # set up the build environment
-            nspawn_flags = ['--bind={}:{}/'.format(pkg_dir, BUILD_DIR)]
+            nspawn_flags = bind_mount_flags(pkg_dir, source_pkg_dir)
             prep_flags = ['--build-prepare']
 
             # if we force a suite and have injected packages, the injected packages
@@ -257,7 +265,8 @@ def internal_execute_build(
                 return False
 
             # run the actual build. At this point, code is less trusted, and we disable network access.
-            nspawn_flags = ['--bind={}:{}/'.format(pkg_dir, BUILD_DIR), '-u', 'builder']
+            # nspawn_flags = bind_mount_flags(pkg_dir, source_pkg_dir)
+            nspawn_flags = ['-u', 'builder']
             if not allow_network:
                 nspawn_flags.append('--private-network')
             else:
@@ -509,11 +518,13 @@ def build_from_directory(
                 if proc.returncode != 0:
                     return False
         # mmc:  here we descend into the real binary build?
-        success = internal_execute_build(
+        with temp_dir(pkg_dir) as artifacts_dir: # does it make a suffix?
+            # fixme! is this also for the `create_source_package' case?
+            success = internal_execute_build(
             # the container base?
             osbase,
             # mmc: we pass the temp dir or the real source dir:
-            pkg_tmp_dir if create_source_package else pkg_dir,
+            pkg_tmp_dir if create_source_package else artifacts_dir,
             build_only,
             qa_lintian=qa_lintian,
             interact=interact,
@@ -521,11 +532,11 @@ def build_from_directory(
             buildflags=buildflags,
             build_env=build_env,
             allow_network=allow_network,
-        )
+            )
 
-    # copy build results
-    if success:
-        osbase.retrieve_artifacts(pkg_tmp_dir if create_source_package else pkg_dir)
+            # copy build results
+            if success:
+                osbase.retrieve_artifacts(artifacts_dir)
 
     # save buildlog, if we generated one
     log_fname = os.path.join(
