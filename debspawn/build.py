@@ -205,6 +205,7 @@ def internal_execute_build(
     if not build_env:
         build_env = {}
 
+    print_header(f'Package will build from {source_pkg_dir} inside {pkg_dir}')
     # get a fresh UID to give to our build user within the container
     builder_uid = get_random_free_uid_gid()[0]
 
