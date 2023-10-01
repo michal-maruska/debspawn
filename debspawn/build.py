@@ -506,13 +506,16 @@ def build_from_directory(
     with temp_dir(pkg_sourcename) if create_source_package else nullcontext() as pkg_tmp_dir:
         if create_source_package:
             with cd(pkg_tmp_dir):
+                # mmc: so we use the just-created source package:
                 cmd = ['dpkg-source', '-x', os.path.join(pkg_dir, '..', dsc_fname)]
                 proc = subprocess.run(cmd, check=False)
                 if proc.returncode != 0:
                     return False
+        # mmc:  here we descend into the real binary build?
         success = internal_execute_build(
             # the container base?
             osbase,
+            # mmc: we pass the temp dir or the real source dir:
             pkg_tmp_dir if create_source_package else pkg_dir,
             build_only,
             qa_lintian=qa_lintian,
