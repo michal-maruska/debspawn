@@ -1,0 +1,30 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: DebSpawn
+Upstream-Contact: Matthias Klumpp <mak@debian.org>
+Source: https://github.com/lkhq/debspawn
+
+Files: *
+Copyright: Matthias Klumpp <mak@debian.org>
+License: LGPL-3.0+
+
+License: LGPL-3.0+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 3.0 of the License, or (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU Lesser General Public
+ License along with this program.
+ .
+ On Debian systems, the complete text of the GNU Lesser General
+ Public License version 2.1 can be found in "/usr/share/common-licenses/LGPL-2.1".
+
+Files: debspawn/utils/command.py
+Copyright: 2016-2018 Matthias Klumpp <matthias@tenstral.net>,
+           2012-2013 Paul Tagliamonte <paultag@debian.org>
+License: LGPL-3.0+

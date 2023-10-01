@@ -1,0 +1,56 @@
+#!/bin/bash
+set -e
+
+#
+# Test actions commonly used with debspawn
+# (create image, build package, list images, update images, delete images)
+#
+
+. /etc/os-release
+if [ -z ${VERSION_CODENAME+x} ]; then
+  VERSION_CODENAME=stable
+fi
+
+RESULTS_DIR=/var/lib/debspawn/results/
+
+set -x
+
+# test creating a new image
+debspawn create $VERSION_CODENAME
+
+mkdir -p build-test && cd build-test
+apt-get source hello
+cd hello-*
+
+if compgen -G "${RESULTS_DIR}/hello_*.deb" > /dev/null; then
+    echo "Build results already existed! - Maybe the build environment is not clean?"
+    exit 1
+fi
+echo ""
+
+# test building a package
+debspawn build $VERSION_CODENAME .
+
+if ! compgen -G "${RESULTS_DIR}/hello_*.deb" > /dev/null; then
+    echo "Build result was missing!"
+    exit 1
+fi
+
+cd ..
+rm -rf build-test
+echo ""
+
+# test image update
+debspawn update $VERSION_CODENAME
+echo ""
+
+# list all available images
+debspawn list
+echo ""
+
+# show status info
+debspawn maintain --status
+echo ""
+
+# delete the image
+debspawn delete $VERSION_CODENAME

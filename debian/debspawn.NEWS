@@ -1,0 +1,25 @@
+debspawn (0.5.1-1) unstable; urgency=medium
+
+  This release changes the default bootstrap variant to `buildd`. To
+  access previously generated container images, you may need to pass
+  `--variant=none` to your build/login/run command.
+  To restore the previous behavior, create `/etc/debspawn/global.toml`
+  and add the line `DefaultBootstrapVariant = "none"`.
+
+  Container images can now have arbitrary names, not tied to the name
+  of a specific suite. Debspawn will infer a suite name from a container
+  name if possible, so all existing commands should continue to work
+  as usual. A suite can be selected explicitly by passing the `--suite`
+  parameter.
+
+ -- Matthias Klumpp <mak@debian.org>  Mon, 08 Nov 2021 19:20:42 +0100
+
+debspawn (0.4.2-1) unstable; urgency=medium
+
+  Due to a change in how UIDs are assigned to the build user in a container,
+  images created with an older version of debspawn will have to be updated
+  before they can be used for building packages again.
+  You can update all images automatically in one go by running
+  `debspawn maintain --update-all`.
+
+ -- Matthias Klumpp <mak@debian.org>  Mon, 24 May 2021 22:48:45 +0200

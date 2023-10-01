@@ -1,0 +1,40 @@
+Source: debspawn
+Section: utils
+Priority: optional
+Maintainer: Matthias Klumpp <mak@debian.org>
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               docbook-xml,
+               docbook-xsl,
+               python3-all,
+               python3-pkgconfig,
+               python3-setuptools,
+               python3-tomlkit (>= 0.8.0),
+               systemd,
+               xsltproc
+Build-Conflicts: pybuild-plugin-pyproject
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+Homepage: https://github.com/lkhq/debspawn
+Vcs-Git: https://salsa.debian.org/laniakea-team/debspawn.git
+Vcs-Browser: https://salsa.debian.org/laniakea-team/debspawn
+
+Package: debspawn
+Architecture: all
+Depends: debootstrap,
+         systemd-container,
+         zstd,
+         ${misc:Depends},
+         ${python3:Depends}
+Recommends: devscripts,
+            dpkg-dev
+Suggests: build-essential,
+          sudo
+Description: Build in nspawn containers
+ Debspawn is a tool to build Debian packages in an isolated environment,
+ using systemd-nspawn containers.
+ By using containers, Debspawn can isolate builds from the host system
+ much better than traditional chroot-based build environments could.
+ .
+ Debspawn is designed to be both easy to use by humans, as well as easy
+ to integrate into an automated package build workflow.

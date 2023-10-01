@@ -1,0 +1,149 @@
+debspawn (0.6.2-1) unstable; urgency=medium
+
+  * New upstream bugfix release: 0.6.2
+    - Add Python 3.11 support
+    - Allow APT more choices when installing build-deps from partial suites
+    - Don't crash when recreating an image that has used a base-suite
+      than does not match the image name
+    - Make APT consider all suites equally for dependency resolution
+
+ -- Matthias Klumpp <mak@debian.org>  Sun, 28 May 2023 18:16:46 +0200
+
+debspawn (0.6.1-1) unstable; urgency=medium
+
+  * New upstream version: 0.6.1
+    - Make container APT configuration more sbuild-like
+    - docs: Update positional argument info in manual pages
+    - Use useradd instead of adduser (Closes: #1024090)
+    - Don't force a suite when packages are injected
+  * Bump standards version: No changes needed
+
+ -- Matthias Klumpp <mak@debian.org>  Thu, 02 Feb 2023 22:46:33 +0100
+
+debspawn (0.6.0-1) unstable; urgency=medium
+
+  * New upstream version: 0.6.0
+    - Fixes build with latest setuptools (Closes: #1020077)
+    - Asks explcitly if artifacts should be stored when running in
+      interactive mode (Closes: #986972)
+    - Allows disabling of built-in package caching (Closes: #989890)
+    - Adds option to boot a container when running custom commands
+
+ -- Matthias Klumpp <mak@debian.org>  Sun, 02 Oct 2022 19:19:25 +0200
+
+debspawn (0.5.2-1) unstable; urgency=medium
+
+  * New upstream version: 0.5.2
+    - Allow one to boot a container for interactive logins
+    - Allow building for NotAutomatic suites without any hacks
+    - Do not include APT package caches in tarballs (Closes: #1001460)
+
+ -- Matthias Klumpp <mak@debian.org>  Tue, 22 Feb 2022 19:33:53 +0100
+
+debspawn (0.5.1-1) unstable; urgency=medium
+
+  [ Matthias Klumpp ]
+  * New upstream version: 0.5.1
+    - Adds a safeguard to unmount any (bin)mount points when removing a
+      container, so no data gets deleted by accident (Closes: #997960).
+    - Decouples image names from suite names, so people can give their own
+      names to images for experimentation (Closes: #989897).
+    - Changes the default bootstrap variant to "buildd". To access images
+      created without a variant, users may need to pass `--variant=none` to
+      debspawn or change the global default (Closes: #989907).
+  * Add NEWS entry about changed default bootstrap variant
+
+  [ Debian Janitor ]
+  * Bump debhelper from old 12 to 13
+  * Set upstream metadata fields
+
+ -- Matthias Klumpp <mak@debian.org>  Mon, 08 Nov 2021 19:56:06 +0100
+
+debspawn (0.5.0-1) unstable; urgency=medium
+
+  * New upstream version: 0.5.0
+    - Will always save build logs, even if build failed (Closes: #989200)
+    - Installs a timer to clean all caches (even those of images which have
+      not been updated or used in months) monthly.
+    - Fixes image creation for Ubuntu
+    - The `debspawn maintain` subcommand is documented now
+  * Drop all patches: Applied upstream
+  * Drop single-version-externally-managed build hack
+  * Run status command in autopkgtest
+
+ -- Matthias Klumpp <mak@debian.org>  Fri, 04 Jun 2021 23:26:08 +0200
+
+debspawn (0.4.2-2) unstable; urgency=medium
+
+  * Add missing build dependency on systemd
+
+ -- Matthias Klumpp <mak@debian.org>  Tue, 25 May 2021 10:06:14 +0200
+
+debspawn (0.4.2-1) unstable; urgency=medium
+
+  * New upstream version: 0.4.2
+    - Configure APT to not install recommends by default (Closes: #987312)
+    - Allow defining custom environment variables for package builds
+      (Closes: #986967)
+    - Use dpkg --print-architecture to determine arch (Closes: #987547)
+    - Check system encoding properly (Closes: #982793)
+    - Run builds as user with a random free UID (Closes: #989049)
+  * Update homepage URL
+  * Delete all state data on purge (Closes: #988371)
+  * Migrate settings automatically after installation
+  * Add NEWS entry about required image updates
+  * Add autopkgtest for common debspawn tasks
+  * Add new build dependency on python3-pkgconfig
+
+ -- Matthias Klumpp <mak@debian.org>  Mon, 24 May 2021 23:21:45 +0200
+
+debspawn (0.4.1-1) unstable; urgency=medium
+
+  * New upstream version: 0.4.1
+    - Installs Lintian after build (Closes: #967897).
+    - Makes the global.toml configuration file a public interface
+      and documents it. Everyone using the older undocumented JSON
+      config file will need to adjust the configuration (Closes: #968665).
+    - Disables syscall filter for some groups by default to create an
+      environment closer to that of sbuild (so tests of e.g. glibc will work).
+
+ -- Matthias Klumpp <mak@debian.org>  Tue, 22 Dec 2020 10:04:38 +0100
+
+debspawn (0.4.0-1) unstable; urgency=medium
+
+  * New upstream version: 0.4.0
+
+ -- Matthias Klumpp <mak@debian.org>  Mon, 20 Jan 2020 21:34:26 +0100
+
+debspawn (0.3.0-1) unstable; urgency=medium
+
+  * New upstream version: 0.3.0
+  * Install with single-version-externally-managed
+  * Recommend devscripts, there is a high chance these will
+    be needed on the host system, e.g. for debsign
+  * Remove ancient Python version field: 3.5 is satisfied by
+    oldstable now
+  * Perform rootless build
+
+ -- Matthias Klumpp <mak@debian.org>  Mon, 06 Jan 2020 21:40:22 +0100
+
+debspawn (0.2.1-1) unstable; urgency=medium
+
+  * New upstream version: 0.2.1
+  * Switch to dh compat level 12
+  * Bump standards version (no changes needed)
+
+ -- Matthias Klumpp <mak@debian.org>  Thu, 10 Jan 2019 20:06:44 +0100
+
+debspawn (0.2.0-1) unstable; urgency=medium
+
+  * New upstream version: 0.2.0
+  * Add missing Vcs-* URLs
+
+ -- Matthias Klumpp <mak@debian.org>  Tue, 28 Aug 2018 17:52:36 +0200
+
+debspawn (0.1.0-1) unstable; urgency=medium
+
+  * Initial release (Closes: #906673)
+
+ -- Matthias Klumpp <mak@debian.org>  Mon, 20 Aug 2018 22:40:24 +0200

@@ -1,0 +1,5 @@
+Tests: debspawn-common
+Depends: apt,
+         debspawn,
+         sudo
+Restrictions: needs-root, isolation-machine, allow-stderr
