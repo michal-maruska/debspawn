@@ -23,6 +23,7 @@ import subprocess
 from glob import glob
 from collections.abc import Iterable
 
+from contextlib import nullcontext
 from .nspawn import nspawn_run_persist, nspawn_run_helper_persist
 from .injectpkg import PackageInjector
 from .utils.env import (
@@ -489,38 +490,42 @@ def build_from_directory(
     with cd(pkg_dir):
         with switch_unprivileged():
             pkg_sourcename, pkg_version, dsc_fname = _read_source_package_details()
+
             if not pkg_sourcename:
                 return False
-            if not create_source_package(pkg_dir, clean_source):
+            if create_source_package:
                 print_section('Creating source package')
                 return False
+                if not create_source_package(pkg_dir, clean_source):
+                    return False
 
     print_header('Package build')
     print_build_detail(osbase, pkg_sourcename, pkg_version)
 
     success = False
-    with temp_dir(pkg_sourcename) as pkg_tmp_dir:
-        with cd(pkg_tmp_dir):
-            cmd = ['dpkg-source', '-x', os.path.join(pkg_dir, '..', dsc_fname)]
-            proc = subprocess.run(cmd, check=False)
-            if proc.returncode != 0:
-                return False
-
+    with temp_dir(pkg_sourcename) if create_source_package else nullcontext() as pkg_tmp_dir:
+        if create_source_package:
+            with cd(pkg_tmp_dir):
+                cmd = ['dpkg-source', '-x', os.path.join(pkg_dir, '..', dsc_fname)]
+                proc = subprocess.run(cmd, check=False)
+                if proc.returncode != 0:
+                    return False
         success = internal_execute_build(
+            # the container base?
             osbase,
-            pkg_tmp_dir,
+            pkg_tmp_dir if create_source_package else pkg_dir,
             build_only,
             qa_lintian=qa_lintian,
             interact=interact,
-            source_pkg_dir=pkg_dir,
+            source_pkg_dir=pkg_dir, # original one
             buildflags=buildflags,
             build_env=build_env,
             allow_network=allow_network,
         )
 
-        # copy build results
-        if success:
-            osbase.retrieve_artifacts(pkg_tmp_dir)
+    # copy build results
+    if success:
+        osbase.retrieve_artifacts(pkg_tmp_dir if create_source_package else pkg_dir)
 
     # save buildlog, if we generated one
     log_fname = os.path.join(
