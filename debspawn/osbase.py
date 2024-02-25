@@ -539,6 +539,7 @@ class OSBase:
                 cmd.append(mirror)
 
             print_section('Bootstrap')
+            print_info(cmd)
             proc = subprocess.run(cmd, check=False)
             if proc.returncode != 0:
                 return False
