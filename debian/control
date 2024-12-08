@@ -10,7 +10,7 @@ Build-Depends: debhelper-compat (= 13),
                python3-pkgconfig,
                python3-setuptools,
                python3-tomlkit (>= 0.8.0),
-               systemd,
+               systemd, systemd-dev,
                xsltproc
 Build-Conflicts: pybuild-plugin-pyproject
 Standards-Version: 4.6.2
