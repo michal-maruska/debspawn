@@ -150,7 +150,7 @@ def _execute_sdnspawn(
         sys.exit(9)
 
     cmd = ['systemd-nspawn']
-    cmd.extend(['-M', machine_name])
+    cmd.extend(['--machine', machine_name])
     if boot:
         # if we boot the container, we also register it with machinectl, otherwise
         # we run an unregistered container with the command as PID2
@@ -158,7 +158,7 @@ def _execute_sdnspawn(
         cmd.append('--notify-ready=yes')
     else:
         cmd.append('--register=no')
-        cmd.append('-a')
+        cmd.append('--as-pid2')
     if private_users:
         cmd.append('-U')  # User namespaces with --private-users=pick --private-users-chown, if possible
 
@@ -255,7 +255,9 @@ def nspawn_run_persist(
             # For non-booted containers, let nspawn execute the command as the selected user.
             params.append('--user={}'.format(run_user))
         params.extend(flags)
-        params.extend(['-{}D'.format('' if verbose else 'q'), base_dir])
+        if verbose:
+            params.extend(['--quiet'])
+        params.extend(['--directory', base_dir])
 
         # nspawn can not run a command in a booted container on its own
         if not boot:
