@@ -1,0 +1,96 @@
+* beware: still focal centric.
+
+
+* TAGS ?
+$ etags **/*.py
+
+* run inplace?
+
+LANG=$LANG.utf8  ~/git/debian/debspawn/debspawn.py  create --arch arm64  bullseye
+sudo debootstrap --arch=arm64 --include=python3-minimal,eatmydata --variant=buildd bullseye /var/tmp/debspawn/6cxa24rr
+
+
+* create
+debspawn create focal
+
+* update --- ?
+If I want to update it -- i.e. test the code which customizes it.
+I don't think it will re-customize it!
+.... this seems to run 'apt dist-upgrade'
+/usr/lib/debspawn/dsrun --buid=67362 --update
+full-upgrade ....
+
+and copies over new dsrun?
+
+/usr/lib/debspawn/dsrun --update
+runs apt update:
+I need to install ca-certificates.
+
+md5sum /usr/lib/debspawn/dsrun
+4a5e4eacc91a0754ddde823c68e0fa4c  /usr/lib/debspawn/dsrun
+
+* signatures don't work:
+ Failed to fetch https://michalmaruska-tomtom.github.io/dists/sid/InRelease  Certificate verification failed: The certificate is NOT trusted. The certificate issuer is unknown.
+
+/usr/lib/debspawn/dsrun --update
+
+* how to update persistently?
+--persistent
+apt install ca-certificates
+
+debspawn login --persistent  sid
+# how to import things?
+
+** But it's dangerous .... I just installed 'systemd' but how to leave it out?
+
+apt upgrade
+
+
+
+# so it's better to update ONCE:
+cat /var/tmp/debspawn/0oxq00sb/etc/apt/sources.list.d/maruska-local.list
+
+
+
+
+* delete
+
+* login
+
+$ debspawn login focal
+run_command -> Popen: dpkg --print-architecture
+run_command -> Popen: dpkg --print-architecture
+
+Popen: tar -C /var/tmp/debspawn/l2u3oco7 -I zstd -xf /var/lib/debspawn/images/focal-buildd-amd64.tar.zst
+
+systemd-nspawn -M latitude-focal-buildd-amd64-y360 --register=no -a --chdir=/srv --link-journal=no --bind=/var/tmp/debspawn/aptcache-latitude-focal-buildd-amd64-y360-gtrmv99f:/var/cache/apt/archives/ -D /var/tmp/debspawn/l2u3oco7
+
+
+
+
+
+
+
+* is dsrun the tool inside which drives the actions?
+# IMPORTANT: This file is placed within a Debspawn container.
+# The containers only contain a minimal set of packages, and only a reduced
+# installation of Python is available via the python3-minimal package.
+# This file must be self-contained and only depend on modules available
+# in that Python installation.
+
+
+* Design:
+
+* so given package X we use:
+
+/gbp/X   ... as sources
+/gbp/X.tmp  ... as wrapper,
+
+inside the container it's
+X.tmp  /srv/build/
+X  /srv/build/package
+
+
+* todo:
+delete the directory
+find the changes and proceed with gbp ?
