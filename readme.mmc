@@ -51,6 +51,16 @@ apt upgrade
 cat /var/tmp/debspawn/0oxq00sb/etc/apt/sources.list.d/maruska-local.list
 
 
+* now it fails:
+Automatically implying --private-network, since mounting /sys/ in an unprivileged user namespaces requires network namespacing.
+Invoking container from plain directory tree is currently not supported if called without privileges.
+
+Automatically implying --private-network, since mounting /sys/ in an unprivileged user namespaces requires network namespacing.
+* how to run debspawn and avoid clean-up on failure?
+So I can manually invoke systemd-nspawn with the prepared directories
+
+*** Directory based ones (i.e. --directory=) are not supported.
+so I need to be root.
 
 
 * delete
