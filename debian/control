@@ -25,7 +25,8 @@ Depends: debootstrap,
          systemd-container,
          zstd,
          ${misc:Depends},
-         ${python3:Depends}
+         ${python3:Depends},
+         python3-tomlkit
 Recommends: devscripts,
             dpkg-dev
 Suggests: build-essential,
