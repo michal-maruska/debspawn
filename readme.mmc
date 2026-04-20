@@ -109,3 +109,18 @@ find the changes and proceed with gbp ?
 
 * fixing ssl issue:
 apt reinstall ca-certificates
+
+
+--
+
+Container precision30-sid-buildd-amd64-rzg8 exited successfully.
+nspawn -> Popen?: systemd-nspawn --machine precision30-sid-buildd-amd64-rzg8 --register=no --as-pid2 --timezone=copy --system-call-filter @memlock @pkey @clock @cpu-emulation -E GITSHA=04e2568aac1b25f01ec76c684a9d92d4e7077aed -E MAKEFLAGS=--format=color --chdir=/srv --link-journal=no --bind=/var/tmp/debspawn/pkgsync-precision30-sid-buildd-amd64-rzg8-hvekt50p/aptcache:/var/cache/apt/archives/ --bind=/gbp/postgresql-17-17.5-1-ou3yh8ow:/srv/build --bind=/gbp/postgresql-17-17.5-1:/srv/build/package -u builder --private-network --directory /var/tmp/debspawn/7ofmgep3 /usr/lib/debspawn/dsrun --buid=65535 --build-run --suite sid --buildflags=-b;-b
+
+ Spawning container precision30-sid-buildd-amd64-rzg8 on /var/tmp/debspawn/7ofmgep3.
+Failed to parse UID of user.
+Container precision30-sid-buildd-amd64-rzg8 failed with error code 1.
+
+
+* how to reuse the Host /var/cache/apt/archives  ?
+
+need to lock it!
