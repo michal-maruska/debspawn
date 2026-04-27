@@ -79,7 +79,7 @@ def systemd_version_atleast(expected_version: int):
 
 def get_nspawn_personality(osbase):
     '''
-    Return the syszemd-nspawn container personality for the given combination
+    Return the systemd-nspawn container personality for the given combination
     of host architecture and base OS.
     This allows running x86 builds on amd64 machines.
     '''
@@ -150,7 +150,7 @@ def _execute_sdnspawn(
         sys.exit(9)
 
     cmd = ['systemd-nspawn']
-    cmd.extend(['-M', machine_name])
+    cmd.extend(['--machine', machine_name])
     if boot:
         # if we boot the container, we also register it with machinectl, otherwise
         # we run an unregistered container with the command as PID2
@@ -158,7 +158,7 @@ def _execute_sdnspawn(
         cmd.append('--notify-ready=yes')
     else:
         cmd.append('--register=no')
-        cmd.append('-a')
+        cmd.append('--as-pid2')
     if private_users:
         cmd.append('-U')  # User namespaces with --private-users=pick --private-users-chown, if possible
 
@@ -195,6 +195,9 @@ def _execute_sdnspawn(
 
     # add custom parameters
     cmd.extend(parameters)
+
+    print("nspawn -> Popen?: ", file=sys.stderr, end='')
+    print(" ".join(cmd), file=sys.stderr)
 
     if nowait:
         return subprocess.Popen(cmd, shell=False, stdin=subprocess.DEVNULL)
@@ -255,7 +258,9 @@ def nspawn_run_persist(
             # For non-booted containers, let nspawn execute the command as the selected user.
             params.append('--user={}'.format(run_user))
         params.extend(flags)
-        params.extend(['-{}D'.format('' if verbose else 'q'), base_dir])
+        if verbose:
+            params.extend(['--quiet'])
+        params.extend(['--directory', base_dir])
 
         # nspawn can not run a command in a booted container on its own
         if not boot:
@@ -432,6 +437,7 @@ def nspawn_run_helper_ephemeral(
     private_users: bool = False,
 ):
     cmd = nspawn_make_helper_cmd(helper_flags, build_uid)
+    print(" ".join(cmd), file=sys.stderr)
     return nspawn_run_ephemeral(
         base_dir,
         machine_name,

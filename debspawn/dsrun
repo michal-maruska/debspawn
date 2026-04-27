@@ -188,8 +188,8 @@ def update_container(builder_uid):
         run_command('useradd -M -f -1 -d {} --uid {} {}'
                     .format(INVALID_DIR, builder_uid, BUILD_USER))
 
-    run_command('mkdir -p /srv/build')
-    run_command('chown {} /srv/build'.format(BUILD_USER))
+    run_command(f'mkdir -p {BUILD_DIR}/package')
+    run_command('chown {} {}'.format(BUILD_USER, BUILD_DIR))
 
     # ensure the non existent directory is gone even if it was
     # created accidentally
@@ -206,6 +206,13 @@ def prepare_run():
         run_apt_command('full-upgrade')
 
     return True
+
+def chdir_to_build():
+    os.chdir("{}/package".format(BUILD_DIR))
+    # for f in glob('./*'):
+    #     if os.path.isdir(f):
+    #         os.chdir(f)
+    #         break
 
 
 def _generate_hashes(filename):
@@ -286,13 +293,9 @@ SHA256:
                 run_apt_command('full-upgrade')
 
     # ensure we are in our build directory at this point
-    os.chdir(BUILD_DIR)
-
-    run_command('chown -R {} /srv/build'.format(BUILD_USER))
-    for f in glob('./*'):
-        if os.path.isdir(f):
-            os.chdir(f)
-            break
+    chdir_to_build()
+    # mmc: why not before the line above?
+    run_command('chown -R {} {}'.format(BUILD_USER, BUILD_DIR))
 
     print_section('Installing package build-dependencies')
     with eatmydata():
@@ -309,11 +312,7 @@ def build_package(buildflags=None, suite=None):
     drop_privileges()
     print_section('Build')
 
-    os.chdir(BUILD_DIR)
-    for f in glob('./*'):
-        if os.path.isdir(f):
-            os.chdir(f)
-            break
+    chdir_to_build()
 
     cmd = ['dpkg-buildpackage']
     if suite:
@@ -329,11 +328,7 @@ def build_package(buildflags=None, suite=None):
 
 def run_qatasks(qa_lintian=True):
     ''' Run QA tasks on a built package immediately after build (currently Lintian) '''
-    os.chdir(BUILD_DIR)
-    for f in glob('./*'):
-        if os.path.isdir(f):
-            os.chdir(f)
-            break
+    chdir_to_build()
 
     if qa_lintian:
         print_section('QA: Prepare')
