@@ -17,8 +17,13 @@ debspawn create focal
 * integrate with my Apt sources!
 
 
+
+
 * update --- ?
 debspawn login --persistent  sid
+
+the mount (of /var/cache/apt/archives/....) is visible only on the cmdline?
+
 
 If I want to update it -- i.e. test the code which customizes it.
 I don't think it will re-customize it!
@@ -124,3 +129,7 @@ Container precision30-sid-buildd-amd64-rzg8 failed with error code 1.
 * how to reuse the Host /var/cache/apt/archives  ?
 
 need to lock it!
+
+
+* 2026
+WARNING: Directory /nonexistent exists and can not be removed!
