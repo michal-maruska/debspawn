@@ -266,8 +266,9 @@ def internal_execute_build(
                 return False
 
             # run the actual build. At this point, code is less trusted, and we disable network access.
-            # nspawn_flags = bind_mount_flags(pkg_dir, source_pkg_dir)
-            nspawn_flags = ['-u', 'builder']
+            nspawn_flags = bind_mount_flags(pkg_dir, source_pkg_dir)
+            nspawn_flags.extend(['-u', 'builder'])
+
             if not allow_network:
                 nspawn_flags.append('--private-network')
             else:
