@@ -66,7 +66,7 @@ class BuildError(Exception):
 def bind_mount_flags(pkg_dir, source_pkg_dir):
     # new layout:
     return ['--bind={}:{}'.format(pkg_dir, BUILD_DIR),
-     '--bind={}:{}/package'.format(source_pkg_dir, BUILD_DIR),
+            '--bind={}:{}/package'.format(source_pkg_dir, BUILD_DIR),
      ]
 
 def interact_with_build_environment(
