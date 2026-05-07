@@ -1,23 +1,12 @@
-* beware: still focal centric.
-
-* TAGS ?
-$ etags **/*.py
-
 * run inplace?
 
 LANG=$LANG.utf8  ~/git/debian/debspawn/debspawn.py  create --arch arm64  bullseye
 sudo debootstrap --arch=arm64 --include=python3-minimal,eatmydata --variant=buildd bullseye /var/tmp/debspawn/6cxa24rr
 
-
-* create
+* create the images:
 debspawn list
 debspawn create sid
 debspawn create focal
-
-* integrate with my Apt sources!
-
-
-
 
 * update --- ?
 debspawn login --persistent  sid
@@ -31,9 +20,9 @@ I don't think it will re-customize it!
 /usr/lib/debspawn/dsrun --buid=67362 --update
 full-upgrade ....
 
-and copies over new dsrun?
+*** and copies over new dsrun?
 
-/usr/lib/debspawn/dsrun --update
+***** /usr/lib/debspawn/dsrun --update
 runs apt update:
 I need to install ca-certificates.
 
@@ -54,8 +43,6 @@ apt install ca-certificates
 ******* But it's `dangerous' .... I just installed 'systemd' but how to leave it out?
 
 apt upgrade
-
-
 
 # so it's better to update ONCE:
 cat /var/tmp/debspawn/0oxq00sb/etc/apt/sources.list.d/maruska-local.list
@@ -133,3 +120,6 @@ need to lock it!
 
 * 2026
 WARNING: Directory /nonexistent exists and can not be removed!
+
+* TAGS ?
+$ etags **/*.py
