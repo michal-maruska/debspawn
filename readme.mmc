@@ -20,7 +20,8 @@ I don't think it will re-customize it!
 /usr/lib/debspawn/dsrun --buid=67362 --update
 full-upgrade ....
 
-*** and copies over new dsrun?
+*** and copies over new dsrun?  no.
+cp /var/cache/apt/archives/dsrun  /usr/lib/debspawn/dsrun
 
 ***** /usr/lib/debspawn/dsrun --update
 runs apt update:
@@ -115,11 +116,55 @@ Container precision30-sid-buildd-amd64-rzg8 failed with error code 1.
 
 * how to reuse the Host /var/cache/apt/archives  ?
 
+save, copy ...
 need to lock it!
+
+* architecture
+dsrun is the only agent inside?
+who invokes it?
+
+every time a new container?
+?? Package will build from /gbp/fork-plugin-3.1.0 inside /gbp/fork-plugin-3.1.0-bar2dnou
+
+1/ --build-prepare
+systemd-nspawn --machine precision30-sid-buildd-amd64-u21x --register=no --as-pid2 --timezone=copy --chdir=/srv --link-journal=no
+--bind=/var/tmp/debspawn/pkgsync-precision30-sid-buildd-amd64-u21x-euup16nc/aptcache:/var/cache/apt/archives/
+mmc: notice
+ --bind=/gbp/fork-plugin-3.1.0-bar2dnou:/srv/build
+ --bind=/gbp/fork-plugin-3.1.0:/srv/build/package
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ --directory /var/tmp/debspawn/du49r7be /usr/lib/debspawn/dsrun --buid=64682 --build-prepare --suite sid
+
+2/ 
+
 
 
 * 2026
 WARNING: Directory /nonexistent exists and can not be removed!
 
 * TAGS ?
-$ etags **/*.py
+$ etags ^debian/**/*.py
+
+
+
+* after this the dir is gone?
+systemd-nspawn --machine precision30-sid-buildd-amd64-zmgt
+--register=no --as-pid2 --timezone=copy --chdir=/srv --link-journal=no
+--bind=/var/tmp/debspawn/pkgsync-precision30-sid-buildd-amd64-zmgt-x7c7n4ac/aptcache:/var/cache/apt/archives/
+--bind=/gbp/fork-plugin-3.1.0-mncsx2h6:/srv/build
+--bind=/gbp/fork-plugin-3.1.0:/srv/build/package
+--directory /var/tmp/debspawn/m8m7w2tu
+/usr/lib/debspawn/dsrun --buid=64674 --build-prepare --suite sid
+
+
+systemd-nspawn --machine precision30-sid-buildd-amd64-zmgt --register=no --as-pid2 --timezone=copy
+mmc: during the build:
+--system-call-filter @memlock @pkey @clock @cpu-emulation -E GITSHA=c85e3e0fc7b09f61b46e0e76e31795e1353d492e -E MAKEFLAGS=--format=color
+ --chdir=/srv --link-journal=no
+ --bind=/var/tmp/debspawn/pkgsync-precision30-sid-buildd-amd64-zmgt-x7c7n4ac/aptcache:/var/cache/apt/archives/
+
+no more:
+--bind=/gbp/fork-plugin-3.1.0-mncsx2h6:/srv/build
+--bind=/gbp/fork-plugin-3.1.0:/srv/build/package
+
+ -u builder --private-network --directory /var/tmp/debspawn/m8m7w2tu /usr/lib/debspawn/dsrun --buid=64674 --build-run --suite sid --buildflags=-b;-b
