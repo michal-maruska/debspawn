@@ -1,3 +1,36 @@
+debspawn (0.6.2-1-maruska2) unstable; urgency=medium
+
+  * verbose before Popen
+  * spy more on how nspawn is invoked
+  * verbose
+  * fix typo
+  * verbose the bootstrap command?
+  * extract create_source_package()
+  * Create source package conditionally
+  * verbose
+  * dsrun, build: use BUILD_DIR var, not hardcoded "/srv/build"
+  * dsrun: extract chdir_to_build & don't guess a subdir BUILD_DIR/*
+  * Expect the package sources to be inside BUILD_DIR
+  * dsrun: use BUILD_DIR/package directory instead
+  * bind-mount 1 more directory for artifacts BUILD/package -- and retrieve from there
+  * fix permissions after the build, from outside the container.
+  * my readme
+  * build-depend: systemd-dev
+  * debian: depends: python3-tomlkit
+  * Turn debian/source/format
+  * nspawn: use long cli options
+  * doc
+  * docs: update
+  * docs?
+  * doc
+  * ci: build debian package using my organization's workflow
+  * clean docs
+  * fix: bind-mount even for the build step
+  * indent
+  * doc on the solution
+
+ -- Michal Maruska <mmaruska@gmail.com>  Sat, 09 May 2026 18:38:51 +0200
+
 debspawn (0.6.2-1) unstable; urgency=medium
 
   * New upstream bugfix release: 0.6.2
